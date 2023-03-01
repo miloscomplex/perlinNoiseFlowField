@@ -1,11 +1,11 @@
-let inc = 0.08;
-let scl = 20;
+let inc = 0.05;
+let scl = 12;
 let cols, rows;
 let zoff = 0;
 let particles = [];
 let fr;
 
-let flowfield = [];
+// let flowfield = [];
 
 function setup() {
 
@@ -14,11 +14,13 @@ function setup() {
   cols = floor(width / scl);
   rows = floor(height / scl);
   fr = createP('');
-
+//   flowfield = new Array(cols * rows);
+//   for (let i = 0; i < 500; i++) {
+//     particles[i] = new Particle();
+//   }
 }
 
 function draw() {
-  background(0);
   let yoff = 0;
   for (let y = 0; y < rows; y++) {
     let xoff = 0;
@@ -30,7 +32,7 @@ function draw() {
       flowfield[index] = v;
       xoff += inc;
       stroke(255);
-      strokeWeight(1);
+      strokeWeight(0);
       push();
       translate(x * scl, y * scl);
       rotate(v.heading());
