@@ -1,52 +1,67 @@
-let inc = 0.08;
-let scl = 20;
-let cols, rows;
-let zoff = 0;
-let particles = [];
-let fr;
 
-let flowfield = [];
+let circles = [];
+let circleNum = 200;
+let radius = 2;
 
 function setup() {
-
   background(0);
-  createCanvas(2000, 1000);
-  cols = floor(width / scl);
-  rows = floor(height / scl);
-  fr = createP('');
-
+  createCanvas(1200,600);
+  stroke(255);
+  strokeWeight(1)
+  let firstCircle = new Circle(width/2, height/2, 200);
+  circles.push(firstCircle);
 }
 
 function draw() {
   background(0);
-  let yoff = 0;
-  for (let y = 0; y < rows; y++) {
-    let xoff = 0;
-    for (let x = 0; x < cols; x++) {
-      let index = x + y * cols;
-      let angle = noise(xoff, yoff, zoff) * TWO_PI * 3;
-      let v = p5.Vector.fromAngle(angle);
-      //v.setMag(5);
-      flowfield[index] = v;
-      xoff += inc;
-      stroke(255);
-      strokeWeight(1);
-      push();
-      translate(x * scl, y * scl);
-      rotate(v.heading());
-      line(0, 0, scl, 0);
-      pop();
+
+  let newC = newCircle();
+
+  if (newC !=null) {
+    circles.push(newC);
+  }
+
+  for (let i=0; i < circles.length; i++) {
+    if (circles[i].growing) {
+      if (circles[i].edges()) {
+        circles[i].growing = false;
+      } else {
+        for (let j=0; j<circles.length; j++) {
+          if (circles[i] != circles[j]) {
+            let d = dist(circles[i].x, circles[i].y, circles[j].x, circles[j].y);
+          if (d < circles[i].r + circles[j].r ) {
+            circles[i].growing = false;
+            break;
+          }
+        }
+      }
+      }
     }
-    yoff += 0.1;
-    zoff += 0.0003;
+    if (circles[i].edges()) { 
+      circles[i].growing = false;
+    } else {
+      circles[i].grow();
+    }
+    circles[i].show();
   }
+}
 
-  for (let i = 0; i < particles.length; i++) {
-    particles[i].follow(flowfield);
-    particles[i].update();
-    particles[i].edges();
-    particles[i].show();
+
+function newCircle() {
+
+  let x = random(width)
+  let y = random(height)
+  let valid = true;
+  for (let i=0; i < circles.length; i++) {
+    let d = dist(x,y,circles[i].x, circles[i].y);
+    if (d < circles[i].r) {
+      valid = false;
+      break;
+    }
   }
-
-  fr.html(floor(frameRate()))
+  if (valid) { 
+    return new Circle(x,y, radius);
+  } else {
+    return null;
+  }
 }
