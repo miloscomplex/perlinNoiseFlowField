@@ -5,6 +5,7 @@ class Circle {
         this.y = y;
         this.r = r;
         this.growing = true;
+        this.xoff = 0;
     }
 
     move() {
@@ -13,15 +14,17 @@ class Circle {
     }
 
     show() {
-        stroke(255);
+        //stroke(random(100,255));
+        stroke(255)
         strokeWeight(2);
         noFill();
         ellipse(this.x, this.y, this.r * 2, this.r * 2);
+        //point(this.x, this.y);
     }
 
     grow() {
         if (this.growing) {
-            this.r = this.r + 1;
+            this.r++
         }
     }
 
